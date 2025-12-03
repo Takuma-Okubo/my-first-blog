@@ -1,0 +1,152 @@
+https://tutorial.djangogirls.org/ja/
+
+Django-girls手順
+
+〇Djangoのインストール
+＞django-girlsの演習内容と自身のワークスペースを隔離するため
+
+＞今回作業用の新規ディレクトリ作成および移動
+$ mkdir djangogirls
+$ cd djangogirls
+
+＞仮想環境の作成
+$ python3 -m venv myvenv
+
+＞仮想環境の起動
+C:\Users\Name\djangogirls > myvenv\Scripts\activate
+
+＞Djangoのインストール前に、インストールに使用するソフトウェアのバージョン確認
+(myvenv) ~$ python -m pip install --upgrade pip
+
+＞テキストファイルにインストールするDjangoのバージョンを記載
+　＞「djangogirls/requirements.txt」
+　　＞Django~=5.1.2 #記載内容
+
+＞仮想環境上でDjangoのインストール
+(myvenv) ~$ pip install -r requirements.txt
+
+
+〇プロジェクトを作成しよう！
+＞Djangoの新しいプロジェクトを現在のディレクトリに作成する
+(myvenv) C:\Users\Name\djangogirls> django-admin.exe startproject mysite .
+　＞manage.py:Djangoの管理コマンド（例：runserver、migrate）を実行するためのスクリプト
+    ＞サーバー起動 → python manage.py runserver
+    ＞マイグレーション → python manage.py migrate
+    ＞アプリ作成 → python manage.py startapp blog   など
+　＞settings.py:Djangoプロジェクトの設定ファイル（settings.py）、プロジェクト全体の動作を制御
+    ＞プロジェクトで使うアプリや言語の設定
+
+＞settings.pyの設定変更
+　＞タイムゾーンや言語の設定変更
+　＞pythonanywhereの設定追加
+
+＞sqlite3でデータベースのセットアップ
+(myvenv) ~/djangogirls$ python manage.py migrate
+　＞manage.pyはDjangoの管理コマンドを受け付けるスクリプト(司令官)
+　＞migrate(実行部隊)
+    ＞マイグレーションファイルを読み込む
+    ＞データベースにテーブルを作成・更新する
+    ＞Djangoの内部テーブルもセットアップする
+
+＞ウェブサーバーの起動
+(myvenv) ~/djangogirls$ python manage.py runserver
+
+＞エラーなく起動できれば以下URLへ
+http://127.0.0.1:8000/
+
+
+〇Djangoモデル
+＞新しいアプリケーションの作成
+(myvenv) C:\Users\Name\djangogirls> python manage.py startapp blog
+　＞startapp:アプリのひな形を自動生成(設定情報や画面情報などを記述するためのファイルを自動生成)
+
+　＞Djangoに新規アプリを使用するように設定する
+　settings.pyに設定を追記
+
+＞ブログポストモデル(新しいモデル)の作成：タイトルや本文などのブログの情報を持っている
+　＞class Post(models.Model):   models.Modelを継承して作成、このクラスがブログ記事を表すデータ構造
+
+　＞def publish(self):　　記事を公開するためのメソッド
+
+＞データベースに新しいモデルの設定を反映
+(myvenv) ~/djangogirls$ python manage.py makemigrations blog
+　＞makemigrations
+　　＞1.指定されたアプリを探す
+　　＞2.そのアプリのmodels.pyを読み込み、models.Modelを継承したクラスを探す
+　　＞3.そのクラスのフィールド情報を解析
+　　＞4.解析結果をもとに、データベースにどんなテーブルを作るかを記述したマイグレーションファイルを生成
+
+＞生成したマイグレーションファイルをデータベースに追加
+(myvenv) ~/djangogirls$ python manage.py migrate blog
+
+
+〇ログインページを作ろう
+＞djangoの管理画面にPostモデルを登録する処理
+　＞管理画面からブログ記事を追加・編集・削除できるようになる
+　admin.site.register(Post)
+　　＞Postモデルを管理画面に登録
+    ：http://127.0.0.1:8000/admin/ にアクセスしたとき、Post モデルが表示され、記事の追加・編集が可能に
+
+＞superuser(サイトの全てを管理するユーザー)の作成：ログインするため
+(myvenv) C:\Users\Name\djangogirls> python manage.py createsuperuser
+
+
+〇デプロイ！
+＞デプロイとは：自身が作成したアプリケーションをインターネットで公開すること
+
+＞Gitリポジトリを始める
+$ git init
+　＞現在のディレクトリに新しいGitリポジトリを作成：.gitフォルダが作成される
+
+＞一部ファイルをGitの管理外に設定する
+　＞.gitignoreファイルの作成：環境依存や自動生成されるファイルをGitでは無視するように設定
+
+＞Gitの状態を知りたいときは
+$ git status
+
+＞変更内容を保存、コミットする
+$ git add --all .
+　＞すべての変更をコミット対象に追加、--allで削除されたファイルもすべて
+$ git commit -m "My Django Girls app, first commit"
+　＞コミット
+
+＞GitHubにコードをプッシュ
+　＞新規リポジトリ "my-first-blog" の作成
+　＞リポジトリをクローンするためのURL取得
+　$ git remote add origin https://github.com/<your-github-username>/my-first-blog.git
+　　＞リモートリポジトリの追加
+　$ git push -u origin master
+　　＞ローカルの内容をリモートに送信
+
+＞PythonAnywhereでブログを設定
+　PythonAnywhere：クラウド上のサーバーでpythonのコードを走らせるためのサービス
+　　＞サイトをホスティングして、インターネット上で動かし続ける
+　　　(現在ローカルで動いているdjangoアプリをインターネット上で動かし続ける)ために使用する
+　・設定手順
+　　1.APIトークンの作成
+　　2.作成後、メイン画面から「Bash」コンソールの起動
+　　3.$ pip install --user pythonanywhere ： pip3.6は恐らく対応していないため、verの表記はなしで実行
+　　　＞PythonAnywhereの公式ツールをローカル環境にインストールする
+　　4.$ pa_autoconfigure_django.py --python=3.10 https://github.com/<your-github-username>/my-first-blog.git
+　　　＞PythonAnywhereにDjangoアプリを自動でセットアップするスクリプト
+　　5.ログインするためのユーザー作成
+        (ola.pythonanywhere.com) $ python manage.py createsuperuser
+　　6.以下URLに接続
+        https://djangogirls.pythonanywhere.com/admin/login/?next=/admin/
+
+
+〇Django URL
+＞mysite/urls.py の編集
+ ＞blogアプリケーション内のビューなどを参照できるように
+
+〇Djangoビュー
+＞ビューファイルにHTMLファイルを参照するためのコード追記
+
+〇HTML入門
+＞HTMLテンプレートの作成
+　＞新規ディレクトリ(templates, blog)を作成
+　　＞post_list.html の作成
+    　＞内容の書き込み
+＞http://127.0.0.1:8000/　に接続
+
+
