@@ -142,11 +142,90 @@ $ git commit -m "My Django Girls app, first commit"
 〇Djangoビュー
 ＞ビューファイルにHTMLファイルを参照するためのコード追記
 
+
 〇HTML入門
 ＞HTMLテンプレートの作成
 　＞新規ディレクトリ(templates, blog)を作成
 　　＞post_list.html の作成
     　＞内容の書き込み
-＞http://127.0.0.1:8000/　に接続
+＞http://127.0.0.1:8000/　に接続して画面の確認
 
+＞ここまでの変更をデプロイ
+　＞$ git add --all .　　#コミットの対象を選択(allなのですべて)
+　＞$ git commit -m "Changed the HTML for the site."　　　#コミット
+　＞$ git push      #プッシュ
+　
+　＞$ cd ~/<your-pythonanywhere-domain>.pythonanywhere.com      
+　＞$ git pull      #プル
+
+
+〇Django ORM（クエリセット）
+クエリセット…モデルのオブジェクトのリスト、データベースからデータを読み込んだり、抽出したり、並べ替えたりできる
+
+＞Djangoの管理シェルを起動する：管理画面を使わずに、Pythonコードでデータを操作したいときに使う
+(myvenv) ~/djangogirls$ python manage.py shell
+
+＞オブジェクトの確認
+Post.objects.all()
+
+＞オブジェクトの作成
+>>> from django.contrib.auth.models import User     #Userモデルのインポート
+>>> User.objects.all()      #データベースに登録したユーザーの確認
+>>> me = User.objects.get(username='ola')       #作成しておいたスーパーユーザーの取り出し
+>>> Post.objects.create(author=me, title='Sample title', text='Test')       #ポストの作成
+>>> Post.objects.all()      #作成したポストがあるか確認
+
+＞オブジェクトの抽出： .allを.filterに
+>>> Post.objects.filter(author=me)             #authorがmeのみ
+>>> Post.objects.filter(title__contains='title')        #タイトルがtitleのポストのみ
+
+＞ポストの公開
+>>> post = Post.objects.get(title="Sample title")       #公開するポストの選別
+>>> post.publish()      #公開設定
+>>> Post.objects.filter(published_date__lte=timezone.now())     #公開済みポストの選択
+
+＞オブジェクトの並び替え
+>>> Post.objects.order_by('created_date')       #ポストが古い順に表示
+>>> Post.objects.order_by('-created_date')      #ポストが新しい順に表示
+
+>>> exit()      #プロンプトを閉じる
+
+
+〇テンプレート内の動的データ
+＞blog/views.py の編集
+　from .models import Post
+　＞.models　"."はカレントディレクトリ、もしくはカレントアプリケーション(view.pyとmodels.pyは同じディレクトリ)
+　＞クエリセットを用いるためのコード追記
+　＞{'posts': posts} post_list.htmlにどんなデータを渡すか
+
+
+〇Djangoテンプレート
+＞Djangoテンプレートタグ：HTMLにPythonのようなコードを埋め込むことができ、動的なWebサイトをより早く簡単に作れる
+
+
+〇CSSでカワイくしよう
+＞Bootstrapのインストール
+　＞post_list.htmlの修正
+
+＞Djangoの静的ファイル
+　＞Djangoは、全てのアプリのフォルダ内の "static" と名づけられた全てのフォルダを自動的に探して、
+　　その中身を静的ファイルとして使えるようにする
+
+＞cssファイルの作成
+　＞blog/static内にcssファイル作成
+    h1 a, h2 a {
+        color: #C25100;
+    }
+　　＞"h1 a" CSSセレクタ、h1要素内のa要素にスタイルを適用(h2 aも同様)
+　　※万が一設定が反映されない場合はサーバーを再起動
+
+
+〇テンプレートを拡張しよう
+＞他のページでHTMLの一部、もしくは全てを共有する
+＞base.htmlを作成：基盤となるファイル
+
+
+〇アプリケーションを拡張しよう
+＞投稿のタイトルから投稿の詳細ページへのリンクを作成
+<h2><a href="{% url 'post_detail' pk=post.pk %}">{{ post.title }}</a></h2>
 
