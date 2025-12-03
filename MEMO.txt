@@ -127,7 +127,7 @@ $ git commit -m "My Django Girls app, first commit"
 　　2.作成後、メイン画面から「Bash」コンソールの起動
 　　3.$ pip install --user pythonanywhere ： pip3.6は恐らく対応していないため、verの表記はなしで実行
 　　　＞PythonAnywhereの公式ツールをローカル環境にインストールする
-　　4.$ pa_autoconfigure_django.py --python=3.10 https://github.com/<your-github-username>/my-first-blog.git
+　　4.$ pa_autoconfigure_django.py --python=3.10 https://github.com/Takuma-Okubo/my-first-blog.git
 　　　＞PythonAnywhereにDjangoアプリを自動でセットアップするスクリプト
 　　5.ログインするためのユーザー作成
         (ola.pythonanywhere.com) $ python manage.py createsuperuser
@@ -228,4 +228,9 @@ Post.objects.all()
 〇アプリケーションを拡張しよう
 ＞投稿のタイトルから投稿の詳細ページへのリンクを作成
 <h2><a href="{% url 'post_detail' pk=post.pk %}">{{ post.title }}</a></h2>
+
+
+〇Djangoフォーム
+＞Djangoの管理画面（admin）ではなく、自分のWebサイト上で記事を追加・編集できるフォームを作る。
+＞見た目や動作を自由にカスタマイズできるようにする。
 
